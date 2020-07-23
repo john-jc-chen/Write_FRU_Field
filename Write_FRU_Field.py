@@ -135,12 +135,14 @@ def main():
 
             if val_text in data.keys():
                 value = data[val_text]
-                print(devices)
-                if slot not in devices.keys():
-                    devices[slot] = [[field, value]]
-                else:
 
-                    devices[slot] += [field, value]
+                if type(field) is list:
+                    devices[slot] = []
+                    for i in len(field):
+                        devices[slot] += [field[i], value[i]]
+                else:
+                    devices[slot] = [[field, value]]
+
             else:
                 print("ERROR! Can Not find value of {}. Skip programming this slot.".format(slot))
                 logging.ERROR("ERROR! Can Not find value of {}.".format(slot))
