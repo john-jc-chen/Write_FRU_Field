@@ -138,8 +138,8 @@ def main():
 
                 if type(field) is list:
                     devices[slot] = []
-                    for i in len(field):
-                        devices[slot] += [field[i], value[i]]
+                    for i in range(len(field)):
+                        devices[slot].append([field[i], value[i]])
                 else:
                     devices[slot] = [[field, value]]
 
@@ -147,13 +147,16 @@ def main():
                 print("ERROR! Can Not find value of {}. Skip programming this slot.".format(slot))
                 logging.ERROR("ERROR! Can Not find value of {}.".format(slot))
     print(devices)
-    sys.exit()
-    for slot, ps in data.items():
-        print("Programming {} to {}".format(ps, slot))
-        logging.info("Programming {} to {}".format(ps, slot))
-        if Write_FRU(ip, username, password,ps,slot):
-            print("Program successfully in {}".format(slot))
-            logging.info("Program successfully in {}".format(slot))
+
+    for slot, f in devices.items():
+        print("Programming {}".format(slot))
+        logging.info("Programming {}".format( slot))
+        for v in f:
+            field_id, value = [v[i] for i in range(2)]
+            print(field, value)
+            if Write_FRU(ip, username, password,slot,field_id,value):
+                print("Program successfully in {}".format(slot))
+                logging.info("Program successfully in {}".format(slot))
 
 if __name__ == '__main__':
     main()
