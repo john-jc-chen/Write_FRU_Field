@@ -88,7 +88,10 @@ def main():
                         if field.upper() not in data.keys():
                             data[field.upper()] = value
                         else:
-                            if data[field.upper()].
+                            if type(data[field.upper()]) is list:
+                                data[field.upper()].append(value)
+                            else:
+                                data[field.upper()] = [data[field.upper()], value]
     except IOError as e:
         print("config file is not available. Please read readme file and run this program again. Leave program!")
         logging.error("config file is not available.")
