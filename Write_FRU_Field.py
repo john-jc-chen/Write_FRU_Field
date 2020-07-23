@@ -10,7 +10,7 @@ import logging
 
 
 inter_files = []
-logging.basicConfig(format='%(asctime)s : %(message)s', level=logging.INFO , filename='Write_FRU.log')
+logging.basicConfig(format='%(asctime)s : %(message)s', level=logging.INFO , filename='Write_FRU_Field.log')
 
 def Write_FRU(ip,username,passwd,ps,slot):
     slot_map = {'CMM':'1' ,'A1':'3', 'A2':'4', 'B1':'5', 'B2':'6', 'CMM2':'18'}
@@ -85,7 +85,10 @@ def main():
                     if value and value != '':
                         field = result.group(1).rstrip().lstrip()
                         field = re.sub(r'\(.*?\)', '', field)
-                        data[field] = value
+                        if field.upper() not in data.keys():
+                            data[field.upper()] = value
+                        else:
+                            if data[field.upper()].
     except IOError as e:
         print("config file is not available. Please read readme file and run this program again. Leave program!")
         logging.error("config file is not available.")
@@ -94,21 +97,21 @@ def main():
 
     if 'CMM IP' in data.keys():
         ip = data['CMM IP']
-        del data['CMM IP']
+
     else:
         print("CMM IP is missing. Leave program!")
         sys.exit()
 
-    if 'CMM User Name' in data.keys():
-        username =  data['CMM User Name']
-        del data['CMM User Name']
+    if 'CMM USER NAME' in data.keys():
+        username =  data['CMM USER NAME']
+
     else:
         print("CMM user name is missing. Leave program!")
         sys.exit()
 
-    if 'CMM Password' in data.keys():
-        password = data['CMM Password']
-        del data['CMM Password']
+    if 'CMM PASSWORD' in data.keys():
+        password = data['CMM PASSWORD']
+
     else:
         print("CMM Password is missing. Leave program!")
         sys.exit()
@@ -117,8 +120,29 @@ def main():
         print("Failed to access to {}. Leave program!!".format(ip))
         sys.exit()
 
-    #print(data)
+    print(data)
+    devices = {}
+    for k in data.keys():
+        field = data[k]
+        k = k.upper()
+        result = re.match(r'^(\w+)\s+Field$', k, re.IGNORECASE)
+        if result:
+            slot = result.group(1).rstrip().lstrip()
+            val_text = slot + ' VALUE'
 
+            if val_text in data.keys():
+                value = data[val_text]
+                print(devices)
+                if slot not in devices.keys():
+                    devices[slot] = [[field, value]]
+                else:
+
+                    devices[slot] += [field, value]
+            else:
+                print("ERROR! Can Not find value of {}. Skip programming this slot.".format(slot))
+                logging.ERROR("ERROR! Can Not find value of {}.".format(slot))
+    print(devices)
+    sys.exit()
     for slot, ps in data.items():
         print("Programming {} to {}".format(ps, slot))
         logging.info("Programming {} to {}".format(ps, slot))
