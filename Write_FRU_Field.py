@@ -30,16 +30,17 @@ def Write_FRU(ip,username,passwd,slot, field_id, value):
     run_SMCIPMITool(c1 + ['ipmi', 'raw', '30', '6', '1'])
     if slot != 'CMM' and slot != 'CMM2':
         run_SMCIPMITool(c1 + ['ipmi','raw', '30', '33', '28', slot_txt, '1'])
-
-    result = re.search(r'Product\s+Serial\s+Number\s+\(PS\)\s+\=\s?(\w+)', msg)
+    #print(msg)
+    result = re.search(r'\(' + fields[field_id] + '\)\s+\=\s?(.+?)\s+\n+', msg)
     if result:
-        if ps != result.group(1).rstrip().lstrip():
-            print("Failed to write product serial number.")
-            logging.error("Product serial number not identical")
+        #print(result)
+        if value != result.group(1).rstrip().lstrip():
+            print("Failed to write {}.".format(fields[field_id]))
+            logging.error("Field value not identical in {}. {} vs {}".format(fields[field_id], value, result.group(1).rstrip().lstrip()))
             return False
     else:
-        print("Failed to write product serial number.")
-        logging.error("Product serial number not found")
+        print("Failed to write {}.".format(fields[field_id]))
+        logging.error("Failed to write {}.".format(fields[field_id]))
         return False
     return True
 
@@ -154,7 +155,7 @@ def main():
         logging.info("Programming {}".format( slot))
         for v in f:
             field_id, value = [v[i] for i in range(2)]
-            print(field, value)
+            print(field_id, value)
             if Write_FRU(ip, username, password,slot,field_id,value):
                 print("Program successfully in {}".format(slot))
                 logging.info("Program successfully in {}".format(slot))
