@@ -22,12 +22,12 @@ def Write_FRU(ip,username,passwd,slot, field_id, value):
     com = [tool_cmd, ip, username, passwd]
     c1 = copy.deepcopy(com)
 
-    run_SMCIPMITool(c1 + ['ipmi', 'raw', '30', '6', '0'])
+    #run_SMCIPMITool(c1 + ['ipmi', 'raw', '30', '6', '0'])
     if slot != 'CMM' and slot != 'CMM2':
         slot_txt = slot.lower()
         run_SMCIPMITool(c1 + ['ipmi','raw', '30', '33', '28', slot_txt, '0'])
     msg = run_SMCIPMITool(c1 + ['ipmi', 'fruidw', slot_map[slot], fields[field_id], value], True)
-    run_SMCIPMITool(c1 + ['ipmi', 'raw', '30', '6', '1'])
+    #run_SMCIPMITool(c1 + ['ipmi', 'raw', '30', '6', '1'])
     if slot != 'CMM' and slot != 'CMM2':
         run_SMCIPMITool(c1 + ['ipmi','raw', '30', '33', '28', slot_txt, '1'])
     #print(msg)
@@ -125,7 +125,7 @@ def main():
         print("Failed to access to {}. Leave program!!".format(ip))
         sys.exit()
 
-    print(data)
+    #print(data)
     devices = {}
     for k in data.keys():
         field = data[k]
@@ -148,17 +148,26 @@ def main():
             else:
                 print("ERROR! Can Not find value of {}. Skip programming this slot.".format(slot))
                 logging.ERROR("ERROR! Can Not find value of {}.".format(slot))
-    print(devices)
+    #print(devices)
+    if sys.platform.lower() == 'win32':
+        tool_cmd = f'SMCIPMITool.exe'
+    else:
+        tool_cmd = 'SMCIPMITool'
+    com = [tool_cmd, ip, username, password]
+
+    run_SMCIPMITool(com + ['ipmi', 'raw', '30', '6', '0'])
 
     for slot, f in devices.items():
-        print("Programming {}".format(slot))
-        logging.info("Programming {}".format( slot))
         for v in f:
             field_id, value = [v[i] for i in range(2)]
-            print(field_id, value)
+            print("Programming {} to {}".format(value,slot))
+            logging.info("Programming {} to {}".format(value,slot))
             if Write_FRU(ip, username, password,slot,field_id,value):
                 print("Program successfully in {}".format(slot))
                 logging.info("Program successfully in {}".format(slot))
+            time.sleep(0.5)
+    run_SMCIPMITool(com + ['ipmi', 'raw', '30', '6', '1'])
+    print("Done!")
 
 if __name__ == '__main__':
     main()
