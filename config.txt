@@ -29,13 +29,13 @@ CMM Password:ADMIN
 #Leave blank if you don't want to update FRU at that location
 #Enter CMM product serial number if you want to update CMM FRU information. Otherwise, leave it blank.
 
-A1 Field:
-A1 Value:
+A1 Field:2
+A1 Value:MBM-XEM-002
 
 A2 Field:1
 A2 Value:S218042X9820893
 A2 Field:2
-A2 Value:Test-Name
+A2 Value:MBM-XEM-002
 
 
 B1 Field:
