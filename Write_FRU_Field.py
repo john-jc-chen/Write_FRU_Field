@@ -13,24 +13,24 @@ inter_files = []
 logging.basicConfig(format='%(asctime)s : %(message)s', level=logging.INFO , filename='Write_FRU_Field.log')
 
 def Write_FRU(ip,username,passwd,slot, field_id, value):
-    slot_map = {'CMM':'1' ,'A1':'3', 'A2':'4', 'B1':'5', 'B2':'6', 'CMM2':'18'}
-    fields = {'1':'PS', '2':'PPM', '3':'PN','4':'BS','5':'BP','6':'BPN'}
+    slot_map = {'CMM':'1','MIDPLANE':'2','A1':'3', 'A2':'4', 'B1':'5', 'B2':'6', 'CMM2':'18'}
+    fields = {'1':'PS', '2':'PPM', '3':'PN','4':'BS','5':'BP','6':'BPN', '7':'PV'}
     if sys.platform.lower() == 'win32':
         tool_cmd = f'SMCIPMITool.exe'
     else:
         tool_cmd = 'SMCIPMITool'
     com = [tool_cmd, ip, username, passwd]
     c1 = copy.deepcopy(com)
-
+    print("slot {}".format(slot))
     #run_SMCIPMITool(c1 + ['ipmi', 'raw', '30', '6', '0'])
-    if slot != 'CMM' and slot != 'CMM2':
+    if slot != 'CMM' and slot != 'CMM2' and slot != 'MIDPLANE':
         slot_txt = slot.lower()
         run_SMCIPMITool(c1 + ['ipmi','raw', '30', '33', '28', slot_txt, '0'])
     msg = run_SMCIPMITool(c1 + ['ipmi', 'fruidw', slot_map[slot], fields[field_id], value], True)
     #run_SMCIPMITool(c1 + ['ipmi', 'raw', '30', '6', '1'])
-    if slot != 'CMM' and slot != 'CMM2':
+    if slot != 'CMM' and slot != 'CMM2' and slot != 'MIDPLANE':
         run_SMCIPMITool(c1 + ['ipmi','raw', '30', '33', '28', slot_txt, '1'])
-    #print(msg)
+    print(msg)
     result = re.search(r'\(' + fields[field_id] + '\)\s+\=\s?(.+?)\s+\n+', msg)
     if result:
         #print(result)

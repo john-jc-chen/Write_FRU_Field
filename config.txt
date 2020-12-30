@@ -9,7 +9,7 @@
    B1  CMM2    B2
 
 #Please Enter CMM IP, User name and password
-CMM IP:192.168.100.7
+CMM IP:172.31.48.99
 CMM User Name:ADMIN
 CMM Password:ADMIN
 
@@ -21,6 +21,7 @@ CMM Password:ADMIN
 # 4. Board Serial Number
 # 5. Board Part Number
 # 6. Board Product Name
+# 7. Product Version
 #For Example:
 #A1
 #1:
@@ -29,20 +30,28 @@ CMM Password:ADMIN
 #Leave blank if you don't want to update FRU at that location
 #Enter CMM product serial number if you want to update CMM FRU information. Otherwise, leave it blank.
 
-A1 Field:2
-A1 Value:MBM-XEM-002
+A1 Field:
+A1 Value:
 
-A2 Field:1
-A2 Value:S218042X9820893
-A2 Field:2
-A2 Value:MBM-XEM-002
 
+A2 Field:
+A2 Value:
 
 B1 Field:
 B1 Value:
 
 B2 Field:
 B2 Value:
+B2 Field:
+B2 Value:
+
+MidPlane Field:1
+MidPlane Value:GB191S004711
+
+
+
+		
+
 
 CMM Field:
 CMM Value:
