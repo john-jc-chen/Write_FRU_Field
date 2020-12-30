@@ -21,7 +21,7 @@ def Write_FRU(ip,username,passwd,slot, field_id, value):
         tool_cmd = 'SMCIPMITool'
     com = [tool_cmd, ip, username, passwd]
     c1 = copy.deepcopy(com)
-    print("slot {}".format(slot))
+    #print("slot {}".format(slot))
     #run_SMCIPMITool(c1 + ['ipmi', 'raw', '30', '6', '0'])
     if slot != 'CMM' and slot != 'CMM2' and slot != 'MIDPLANE':
         slot_txt = slot.lower()
